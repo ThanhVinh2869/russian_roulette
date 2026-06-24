@@ -1,8 +1,8 @@
 class DefaultGameConfig():
     player_hp = 5
     ai_hp = 5
-    total_bullets = 8
-    live_bullets = 3
+    total_bullet_count = 6
+    live_bullet_count = 3
     bullet_dmg = 1
     
     cur_round = 1
