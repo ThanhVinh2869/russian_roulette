@@ -1,39 +1,47 @@
-import random, math
+import random, math, time
 from game_manager.DefaultGameConfig import DefaultGameConfig
-
-default = DefaultGameConfig()
 
 class RussianRouletteGameManager():
     # Set up game properties at the start
     def __init__(self, **kwargs):
         # Get attribute values from kwargs, otherwise use default attributes
-        self.player_hp: int = kwargs.get("player_hp", default.player_hp)
-        self.ai_hp: int = kwargs.get("ai_hp", default.ai_hp)
+        self.player_hp: int = kwargs.get("player_hp", DefaultGameConfig.player_hp)
+        self.ai_hp: int = kwargs.get("ai_hp", DefaultGameConfig.ai_hp)
         
-        self.total_bullet_count: int = kwargs.get("total_bullet_count", default.total_bullet_count)
-        self.live_bullet_count: int = kwargs.get("live_bullet_count", default.live_bullet_count)
-        self.bullet_dmg: int = kwargs.get("bullet_dmg", default.bullet_dmg)
+        self.total_bullet_count: int = kwargs.get("total_bullet_count", DefaultGameConfig.total_bullet_count)
+        self.live_bullet_count: int = kwargs.get("live_bullet_count", DefaultGameConfig.live_bullet_count)
+        self.bullet_dmg: int = kwargs.get("bullet_dmg", DefaultGameConfig.bullet_dmg)
 
         self.gun_chamber: GunChamber = self._generate_chamber()
-        self.cur_round: int = kwargs.get("cur_round", default.cur_round)
-        self.cur_bullet_index: int = kwargs.get("cur_bullet_index", default.cur_bullet_index)
-        self.is_player_turn: int = kwargs.get("is_player_turn", default.is_player_turn)
+        self.cur_round: int = kwargs.get("cur_round", DefaultGameConfig.cur_round)
+        self.cur_bullet_index: int = kwargs.get("cur_bullet_index", DefaultGameConfig.cur_bullet_index)
+        self.is_player_turn: int = kwargs.get("is_player_turn", DefaultGameConfig.is_player_turn)
     
     # Looping the game until any player reach 0 HP
     def run_game(self):
         self._print_round_header()
-        
-        # TODO: add delays
+
         while self.ai_hp > 0 and self.player_hp > 0:
             # Reset the round if there are no more bullet
             if self.cur_bullet_index >= self.total_bullet_count:
                 self._reset_round()
                 
-            self._display_game_status()
+            # Display game status    
+            print(f"\nPlayer HP: {self.player_hp} | AI HP: {self.ai_hp}")
+            print(f"Turn: {'Player' if self.is_player_turn else 'AI'}")
+            
+            # Get player's or AI's action
             self._get_action()
+            time.sleep(0.5)
+            self._get_action_result()
+            
+            # Display chamber order (for testing purposes)
+            print(f"Known bullet order: {self.gun_chamber.bullet_array[:self.cur_bullet_index + 1]}")
             
             # Increment bullet index
             self.cur_bullet_index += 1
+            
+            time.sleep(1)
         
         self._end_game()
 
@@ -56,10 +64,19 @@ class RussianRouletteGameManager():
                 return
             
             print("Invalid input. Enter 1 or -1")
-    
+
     def _get_ai_decision(self):
+        time.sleep(1)
         # TODO: write AI algorithm
         return "1"
+    
+    def _get_action_result(self):
+        is_live = self.gun_chamber.get_bullet_at_index(self.cur_bullet_index)
+        
+        if is_live:
+            print("It was a live bullet!")
+        else:
+            print("It was a blank bullet!")
 
     def _reset_round(self):
         self.cur_round += 1
@@ -81,7 +98,6 @@ class RussianRouletteGameManager():
         # Random live bullet count
         self.live_bullet_count = random.randint(min_lives, max_lives)
 
-    # Generate new chamber
     def _generate_chamber(self):
         # Add the live bullets to the chamber and fill the rest with blank bullets
         # (live = 1, blank = 0)
@@ -97,11 +113,6 @@ class RussianRouletteGameManager():
     def _print_round_header(self):
         print(f"\n=== ROUND {self.cur_round} ===")
         print(f"Chamber: {self.live_bullet_count} lives - {self.total_bullet_count - self.live_bullet_count} blank")
-
-    def _display_game_status(self):
-        print(f"\nPlayer HP: {self.player_hp} | AI HP: {self.ai_hp}")
-        print(f"Turn: {'Player' if self.is_player_turn else 'AI'}")
-        print(f"Known bullets: {self.gun_chamber.bullet_array[:self.cur_bullet_index]}")
 
     def _end_game(self):
         status = "win" if self.ai_hp == 0 else "lose"
@@ -140,9 +151,9 @@ class RussianRouletteGameManager():
             
         # Decide which target to remove HP from
         if self.is_player_turn:
-            self.ai_hp -= hp_loss
-        else:
             self.player_hp -= hp_loss
+        else:
+            self.ai_hp -= hp_loss
 
         # Change the turn to the other player only if the bullet was live
         if is_live_bullet:
