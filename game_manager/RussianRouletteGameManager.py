@@ -1,5 +1,6 @@
 import random, math, time
 from game_manager.DefaultGameConfig import DefaultGameConfig
+from enemy_ai.EnemyAIManager import EnemyAIManager
 
 class RussianRouletteGameManager():
     # Set up game properties at the start
@@ -16,6 +17,8 @@ class RussianRouletteGameManager():
         self.cur_round: int = kwargs.get("cur_round", DefaultGameConfig.cur_round)
         self.cur_bullet_index: int = kwargs.get("cur_bullet_index", DefaultGameConfig.cur_bullet_index)
         self.is_player_turn: int = kwargs.get("is_player_turn", DefaultGameConfig.is_player_turn)
+        
+        self.enemy_ai: EnemyAIManager = EnemyAIManager()
     
     # Looping the game until any player reach 0 HP
     def run_game(self):
@@ -67,8 +70,12 @@ class RussianRouletteGameManager():
 
     def _get_ai_decision(self):
         time.sleep(1)
-        # TODO: write AI algorithm
-        return "1"
+        return self.enemy_ai.decide_target(
+            self.ai_hp,
+            self.player_hp,
+            (self.total_bullet_count - self.cur_bullet_index),
+            self.live_bullet_count
+        )
     
     def _get_action_result(self):
         is_live = self.gun_chamber.get_bullet_at_index(self.cur_bullet_index)
@@ -136,7 +143,7 @@ class RussianRouletteGameManager():
             self.player_hp -= hp_loss
 
         # Change the turn to the other player
-        self.is_player_turn = not self.is_player_turn
+        self.is_player_turn = self.is_player_turn
     
     # Function handling the action of shooting oneself (by either the player or AI)
     def _shoot_self(self):
@@ -157,7 +164,7 @@ class RussianRouletteGameManager():
 
         # Change the turn to the other player only if the bullet was live
         if is_live_bullet:
-            self.is_player_turn = not self.is_player_turn
+            self.is_player_turn = self.is_player_turn
         
 class GunChamber():
     def __init__(self, bullet_array):
