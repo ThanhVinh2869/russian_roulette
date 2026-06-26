@@ -1,4 +1,4 @@
-import random, math, time
+import random, math, time, os
 from DefaultGameConfig import DefaultGameConfig
 
 class RussianRouletteGameManager():
@@ -85,6 +85,9 @@ class RussianRouletteGameManager():
         
         self._randomize_bullet_counts()
         self.gun_chamber = self._generate_chamber()
+
+        # Clear the terminal from previous round
+        os.system('cls' if os.name == 'nt' else 'clear') 
         
         self._print_round_header()
     
