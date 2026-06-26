@@ -19,6 +19,9 @@ class RussianRouletteGameManager():
         self.is_player_turn: int = kwargs.get("is_player_turn", DefaultGameConfig.is_player_turn)
         
         self.enemy_ai: EnemyAIManager = EnemyAIManager()
+        
+        self.auto_play_mode: bool = kwargs.get("auto_play_mode", False)
+        self._toggle_auto_play_mode() if self.auto_play_mode else None
     
     # Looping the game until any player reach 0 HP
     def run_game(self):
@@ -28,6 +31,10 @@ class RussianRouletteGameManager():
             # Reset the round if there are no more bullet
             if self.cur_bullet_index >= self.total_bullet_count:
                 self._reset_round()
+            
+            # Auto play mode
+            if self.auto_play_mode:
+                self.is_player_turn = False 
                 
             # Display game status    
             print(f"\nPlayer HP: {self.player_hp} | AI HP: {self.ai_hp}")
@@ -166,6 +173,10 @@ class RussianRouletteGameManager():
         # Change the turn to the other player only if the bullet was live
         if is_live_bullet:
             self.is_player_turn = not self.is_player_turn
+            
+    def _toggle_auto_play_mode(self):
+        self.ai_hp = 99
+        self.player_hp = 99     
         
 class GunChamber():
     def __init__(self, bullet_array):

@@ -53,8 +53,8 @@ class EnemyAIManager():
         # If both actions are good (both EV scores are positive), randomly roll the action using a weighted system
         # (this will be the majority of the cases)
         else:
-            shoot_opponent_weight = ev_shoot_opponent * 1000
-            shoot_self_weight = ev_shoot_self * 1000
+            shoot_opponent_weight = int(ev_shoot_opponent * 1000)
+            shoot_self_weight = int(ev_shoot_self * 1000)
             total_weight = shoot_opponent_weight + shoot_self_weight
             print(f"shoot_opponent_weight = {shoot_opponent_weight} | shoot_self_weight = {shoot_self_weight}")
             
