@@ -82,7 +82,9 @@ class RussianRouletteGameManager():
             self.ai_hp,
             self.player_hp,
             (self.total_bullet_count - self.cur_bullet_index),
-            self.live_bullet_count
+            self.live_bullet_count,
+            self.gun_chamber.bullet_array,
+            self.cur_bullet_index
         )
     
     def _get_action_result(self):
