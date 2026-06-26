@@ -143,7 +143,7 @@ class RussianRouletteGameManager():
             self.player_hp -= hp_loss
 
         # Change the turn to the other player
-        self.is_player_turn = self.is_player_turn
+        self.is_player_turn = not self.is_player_turn
     
     # Function handling the action of shooting oneself (by either the player or AI)
     def _shoot_self(self):
@@ -164,7 +164,7 @@ class RussianRouletteGameManager():
 
         # Change the turn to the other player only if the bullet was live
         if is_live_bullet:
-            self.is_player_turn = self.is_player_turn
+            self.is_player_turn = not self.is_player_turn
         
 class GunChamber():
     def __init__(self, bullet_array):
