@@ -1,5 +1,5 @@
 import random, math, time
-from game_manager.DefaultGameConfig import DefaultGameConfig
+from DefaultGameConfig import DefaultGameConfig
 
 class RussianRouletteGameManager():
     # Set up game properties at the start
@@ -58,6 +58,7 @@ class RussianRouletteGameManager():
                 print("Shoot opponent selected")
                 self._shoot_opponent()
                 return
+            
             elif choice == "-1":
                 print("Shoot self selected")
                 self._shoot_self()
@@ -86,7 +87,7 @@ class RussianRouletteGameManager():
         self.gun_chamber = self._generate_chamber()
         
         self._print_round_header()
-        
+    
     def _randomize_bullet_counts(self):
         # Random total bullet count
         self.total_bullet_count = random.randint(2, 8)
@@ -165,3 +166,7 @@ class GunChamber():
         
     def get_bullet_at_index(self, index):
         return self.bullet_array[index]
+
+# Run the game
+gameManager = RussianRouletteGameManager()
+gameManager.run_game()
