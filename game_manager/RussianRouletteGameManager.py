@@ -1,5 +1,5 @@
 import random, math, time, os
-from DefaultGameConfig import DefaultGameConfig
+from game_manager.DefaultGameConfig import DefaultGameConfig
 
 class RussianRouletteGameManager():
     # Set up game properties at the start
@@ -169,7 +169,3 @@ class GunChamber():
         
     def get_bullet_at_index(self, index):
         return self.bullet_array[index]
-
-# Run the game
-gameManager = RussianRouletteGameManager()
-gameManager.run_game()
